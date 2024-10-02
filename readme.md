@@ -1,3 +1,4 @@
+This is a CV chaos trader. There's no gurrantee in life so just throw everything at the wall and see what you can get with our machine learning random trader!
 Quick start:
 1. Make a virtual environment (https://www.geeksforgeeks.org/create-virtual-environment-using-venv-python/)
 2. Activate your virtual environment
