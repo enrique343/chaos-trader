@@ -5,14 +5,12 @@ import os
 import http.client
 from coinbase.rest import RESTClient
 from json import dumps
+from coinbase.websocket import WSUserClient
 api_key       = os.getenv('KEY_NAME')
 api_secret     = os.getenv('PRIVATE_KEY')
 
 
 client = RESTClient(api_key=api_key, api_secret=api_secret)
-
-
-
 
 
 def coinList():
@@ -49,7 +47,7 @@ def makeBuy(coinId,amount):#base and coin args refer to coinIds.json
     file.close()
 
 
-    order = client.market_order_buy(client_order_id="clientOrderId"+str(latest), product_id=str(coinId), quote_size=str(amount))
+    order = client.market_order_buy(client_order_id="clientOrderId"+str(latest), product_id=str(coinId), quote_size=str(amount)) #amtount is the amt you want to buy in the second asset in the id pair. if BTC-USDC you'll make the purchase using USDC
     latest=str(int(latest)+1)
     file = open("transactionId.txt","w")
 
@@ -66,7 +64,7 @@ def makeSell(coinId,amount):#base and coin args refer to coinIds.json
     file.close()
 
 
-    order = client.market_order_sell(client_order_id="clientOrderId"+str(latest), product_id=str(coinId), base_size=str(amount))
+    order = client.market_order_sell(client_order_id="clientOrderId"+str(latest), product_id=str(coinId), base_size=str(amount)) #amt is the amt of coins you want to sell
     latest=str(int(latest)+1)
     file = open("transactionId.txt","w")
 
