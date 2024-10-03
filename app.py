@@ -2,38 +2,44 @@ from coinbase import jwt_generator
 import pip._vendor.requests
 import json
 import os
+import http.client
+from coinbase.rest import RESTClient
+from json import dumps
 api_key       = os.getenv('KEY_NAME')
 api_secret     = os.getenv('PRIVATE_KEY')
 
-global jwt
-jwt=""
 
-def make_token():
-    global jwt
-    request_method = "GET"
-    request_path = "/api/v3/brokerage/accounts"
-
-    jwt_uri = jwt_generator.format_jwt_uri(request_method, request_path)
-    jwt_token = jwt_generator.build_rest_jwt(jwt_uri, api_key, api_secret)
-
-    jwt= jwt_token
+client = RESTClient(api_key=api_key, api_secret=api_secret)
 
 
 
-def test_token():
-    global jwt
 
-    url= 'https://api.coinbase.com/api/v3/brokerage/accounts'        #gets the cards requested
-    headers = {
-        "Authorization":f'Bearer {jwt}',
-        "Content-Type": "application/json" ,
-    }
-    r = pip._vendor.requests.get(url, headers=headers)
-    print(r)
-    
+
+def coinList():
+    with open("coinIds.json", "w") as file:
+        file.truncate()
+    file.close()
+    coinDict={}
+    products = client.get_products()
+    coins=products["products"]
+    cnt=0
+    for i in coins:
+        if i["base_name"] not in coinDict.keys():
+            coinDict[i["base_name"]]=[i["product_id"]]
+        else:
+            base=coinDict[i["base_name"]]
+            base.append(i["product_id"])
+            coinDict[i["base_name"]]=base
+
+        cnt+=1
+
+    print(cnt)
+
+    with open('coinIds.json', 'w') as f:
+        f.write(json.dumps(coinDict))
 def main():
-    make_token()
-    test_token()
+    coinList()  #makes a json file that has a list of each base and coin that trades under that name
     
+
 if __name__ == "__main__":
     main()
