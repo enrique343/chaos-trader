@@ -35,11 +35,10 @@ class coinbase:
 
             cnt+=1
 
-        print(cnt)
 
         with open('coinIdsCB.json', 'w') as f:
             f.write(json.dumps(coinDict))
-
+        print("finished populating coinIdsCB.json")
 
     def makeBuy(self,coinId,amount):#base and coin args refer to coinIdsCB.json
         '''Purchases coins'''

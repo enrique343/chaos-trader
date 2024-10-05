@@ -30,15 +30,19 @@ def main():
             print("coinbase")
             running=True
             cb=coinbase()
+            if configs["coinbase"]["new"]=="True":
+                makeIds=Thread(target=cb.coinList)
+                makeIds.start()
+                print("Please insert 10 valid coin pairs into the coinWhiteList.json file. Example of coin pair: BTC-USDC")
+                print("Shutting down..")
+                exit()
+
             validateThread=Thread(target=cb.validateWhiteList)
             # validateThread.setDaemon(True)
             validateThread.start()
-
-            if configs["coinbase"]["new"]=="True":
-                print("Please insert 10 valid coin pairs into the coinWhiteList.json file. Example of coin pair: BTC-USDC")
-                exit()
-            elif configs["coinbase"]["valid"]=="False":
+            if configs["coinbase"]["valid"]=="False":
                 print("Please fix your coinWhiteListCB.json file to have valid coin pairs such as: BTC-USDC")
+                print("Shutting down..")
                 exit()
 
             messageThread=Thread(target=cb.message)
