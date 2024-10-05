@@ -6,7 +6,8 @@ Quick start:
 4. Get Api key from coinbase developer platform (it's free)
 5. Make a .env file and copy the sample env file over to it
 6. Copy over your API secret and key name to the .env file
-7. run app.py and enter whatever commands you want. (commands are listed by entering in help in the terminal)
+7. Move all the sample files from the sample folder into your active code folder and remove the "sample_" part of the name.
+8. run app.py and enter whatever commands you want. (commands are listed by entering in help in the terminal)
 
 # Dependicies
 You can install all the dependencies using the following in your terminal
