@@ -12,10 +12,13 @@ class coinbase:
         self.api_key =  os.getenv('KEY_NAME')
         self.api_secret = os.getenv('PRIVATE_KEY')
         self.client = RESTClient(api_key=self.api_key, api_secret= self.api_secret)
+        with open('configs.json', 'r') as file:
+            self.configs = json.load(file)
 
+        file.close() 
 
     def coinList(self):
-        with open("coinIds.json", "w") as file:
+        with open("coinIdsCB.json", "w") as file:
             file.truncate()
         file.close()
         coinDict={}
@@ -34,11 +37,11 @@ class coinbase:
 
         print(cnt)
 
-        with open('coinIds.json', 'w') as f:
+        with open('coinIdsCB.json', 'w') as f:
             f.write(json.dumps(coinDict))
 
 
-    def makeBuy(self,coinId,amount):#base and coin args refer to coinIds.json
+    def makeBuy(self,coinId,amount):#base and coin args refer to coinIdsCB.json
         '''Purchases coins'''
         if amount<=0:
             return
@@ -55,7 +58,7 @@ class coinbase:
         file.write(latest)
         print(order)
 
-    def makeSell(self,coinId,amount):#base and coin args refer to coinIds.json
+    def makeSell(self,coinId,amount):#base and coin args refer to coinIdsCB.json
         '''Sells coins'''
         if amount<=0:
             return
@@ -93,6 +96,39 @@ class coinbase:
         while True:
             print("Running program on coinbase platform")
             time.sleep(600)
+
+    def validateWhiteList(self):
+        with open('coinWhiteListCB.json', 'r') as file:
+            whiteList = json.load(file)
+        file.close()
+        present={}
+        for i in whiteList.keys():
+            if whiteList[i]!=[]:
+                present[i]=whiteList[i]
+        with open('coinIdsCB.json', 'r') as file:
+            coinIds = json.load(file)
+        file.close()
+        invalidTemp=[]
+        invaild=[]
+        for i in present:
+            for coin in present[i]:
+                if coin not in coinIds[i]:
+                    invalidTemp.append(coin)
+            if invalidTemp!=[]:
+                invaild.append(invalidTemp)
+                invalidTemp=[]
+        if invaild!=[]:
+            print("Please remove invalid tokens below: ")
+            print(invaild)
+
+            tempConfig=self.configs
+            tempConfig["coinbase"]["valid"]="False"
+            self.configs=tempConfig
+            with open('configs.json', 'w') as file:
+                file.write(json.dumps(tempConfig))
+            file.close()            
+        
+
 
 
 def main():

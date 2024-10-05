@@ -14,6 +14,11 @@ from threading import *
 
 
 def main():
+    with open('configs.json', 'r') as file:
+        configs = json.load(file)
+
+    file.close() 
+
     done=False
     while not done:
         userInput=input("Please type a command below: \n")
@@ -25,14 +30,44 @@ def main():
             print("coinbase")
             running=True
             cb=coinbase()
+            validateThread=Thread(target=cb.validateWhiteList)
+            # validateThread.setDaemon(True)
+            validateThread.start()
+
+            if configs["coinbase"]["new"]=="True":
+                print("Please insert 10 valid coin pairs into the coinWhiteList.json file. Example of coin pair: BTC-USDC")
+                exit()
+            elif configs["coinbase"]["valid"]=="False":
+                print("Please fix your coinWhiteListCB.json file to have valid coin pairs such as: BTC-USDC")
+                exit()
+
             messageThread=Thread(target=cb.message)
             messageThread.setDaemon(True)
             messageThread.start()
-
             while running:
+                
                 coinBInput=input("Please input any commands or the program will run normally: \n")
+                if coinBInput=="list":
+                    with open('coinIdsCB.json', 'r') as file:
+                        data = json.load(file)
+                    print(data.keys())
+                    file.close()
+                elif coinBInput=="wallet":
+                    with open('heldCoins.json', 'r') as file:
+                        data = json.load(file)
+                    print(data.keys())
+                    file.close()
+                elif coinBInput=="whitelist":
+                    with open('coinWhiteListCB.json', 'r') as file:
+                        data = json.load(file)
+                    whiteListed=[]
+                    for i in data.keys():
+                        if data[i]!=[]:
+                            whiteListed.append(data[i])
 
-                if coinBInput=="quit":
+                    file.close()    
+                    print(whiteListed)
+                elif coinBInput=="quit":
                     exit()
 
             print("done")
