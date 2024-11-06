@@ -6,7 +6,7 @@ from coinbase.rest import RESTClient
 from json import dumps
 from coinbase.websocket import WSUserClient
 from cbTrader import coinbase
-
+from detectEvents import eventFinder
 from threading import *
 
 
@@ -30,6 +30,8 @@ def main():
             print("coinbase")
             running=True
             cb=coinbase()
+            events=eventFinder()
+
             if configs["coinbase"]["new"]=="True":
                 makeIds=Thread(target=cb.coinList)
                 makeIds.start()
@@ -48,9 +50,15 @@ def main():
             messageThread=Thread(target=cb.message)
             messageThread.setDaemon(True)
             messageThread.start()
+
+            testThread=Thread(target=events.detect_kills)
+            testThread.setDaemon(True)
+            testThread.start()
+
             while running:
                 
                 coinBInput=input("Please input any commands or the program will run normally: \n")
+
                 if coinBInput=="list":
                     with open('coinIdsCB.json', 'r') as file:
                         data = json.load(file)
@@ -75,6 +83,15 @@ def main():
                     exit()
 
             print("done")
+
+
+
+
+
+
+
+
+            
         elif userInput=="startGEM":
             #some stuff to implement the connection to Gemini
             print("Gemini")
