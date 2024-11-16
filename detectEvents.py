@@ -16,6 +16,8 @@ class eventFinder:
 
     def detect_kills(self):
         while(True):
+            time.sleep(2)
+
             img = pyautogui.screenshot() 
             screenshotArr = np.array(img)
 
@@ -52,25 +54,17 @@ class eventFinder:
                 cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 255, 255), 2)
                 # if cnt==10:
                 #     break
-            # Show the final image with the matched area. 
+            # Show the final image with the matched area.
+            if cnt==0:
+                continue
+            # cv.imwrite("savedImage.jpg", img_rgb)
 
-
+            return cnt
 
 
             cv.namedWindow("Resized_Window", cv.WINDOW_NORMAL) 
             cv.resizeWindow("Resized_Window", 1920, 1080) 
             cv.imshow("Resized_Window", img_rgb) 
-
-
-
-            # press 'q' with the output window focused to exit.
-            # press 'f' to save screenshot as a positive image, press 'd' to 
-            # save as a negative image.
-            # waits 1 ms every loop to process key presses 
-            key = cv.waitKey(1)
-            if key == ord('q'):
-                cv.destroyAllWindows()
-                break
 
 
 
@@ -113,10 +107,8 @@ class eventFinder:
             # Draw a rectangle around the matched region. 
             for pt in zip(*loc[::-1]): 
                 cnt+=1
-                cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 255, 255), 2)
-                # if cnt==10:
-                #     break
-            # Show the final image with the matched area. 
+                # cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0, 255, 255), 2)
+
             if cnt>=1:
                 return 1
 
@@ -125,18 +117,3 @@ class eventFinder:
             # cv.namedWindow("Resized_Window", cv.WINDOW_NORMAL) 
             # cv.resizeWindow("Resized_Window", 1920, 1080) 
             # cv.imshow("Resized_Window", img_rgb) 
-
-
-
-            # press 'q' with the output window focused to exit.
-            # press 'f' to save screenshot as a positive image, press 'd' to 
-            # save as a negative image.
-            # waits 1 ms every loop to process key presses 
-            # key = cv.waitKey(1)
-            # if key == ord('q'):
-            #     cv.destroyAllWindows()
-            #     break
-            # elif key == ord('f'):
-            #     cv.imwrite('positive/{}.jpg'.format(loop_time), img_rgb)
-            # elif key == ord('d'):
-            #     cv.imwrite('negative/{}.jpg'.format(loop_time), img_rgb)
